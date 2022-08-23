@@ -1,0 +1,219 @@
+diff -Naur libmsp430-orig/DLL430_v3/src/DLL430_OldApiV3.cpp libmsp430-fixed/DLL430_v3/src/DLL430_OldApiV3.cpp
+--- libmsp430-orig/DLL430_v3/src/DLL430_OldApiV3.cpp	2018-04-23 13:56:14.000000000 -0400
++++ libmsp430-fixed/DLL430_v3/src/DLL430_OldApiV3.cpp	2022-01-23 00:09:24.625295851 -0500
+@@ -191,7 +191,7 @@
+ 			//With trace/variable watch enabled, give storage events on same trigger time to be reported
+ 			if (trace_storage.trControl == TR_ENABLE)
+ 			{
+-				this_thread::sleep_for(chrono::milliseconds(100));
++				this_thread::sleep_for(std::chrono::milliseconds(100));
+ 			}
+ 			db_man->pausePolling();
+ 		}
+@@ -1569,7 +1569,7 @@
+ 				log(LogTarget::ERR, ERASE_ERR, "");
+ 				return false;
+ 			}
+-			this_thread::sleep_for(chrono::seconds(1));
++			this_thread::sleep_for(std::chrono::seconds(1));
+ 			return true;
+ 			
+ 		}
+@@ -1583,7 +1583,7 @@
+ 			}
+ 			if (singleDevice)
+ 			{
+-				this_thread::sleep_for(chrono::seconds(1));
++				this_thread::sleep_for(std::chrono::seconds(1));
+ 				return true;
+ 			}
+ 		}
+@@ -1987,7 +1987,7 @@
+ 		if (devArchitecture != MSP432_M4)
+ 		{
+ 			db_man->resumePolling();
+-			this_thread::sleep_for(chrono::milliseconds(500));
++			this_thread::sleep_for(std::chrono::milliseconds(500));
+ 			db_man->pausePolling();
+ 		}
+ 		if (!State(&state, true, &pCPUCycles))
+@@ -3865,7 +3865,7 @@
+ #endif
+ 					UpdateLog.append("\n---------------------Firmware upate end--------------------------\n");
+ 
+-					ofstream(logfile.c_str(), ios::app | ios::out) << UpdateLog;
++					std::ofstream(logfile.c_str(), ios::app | ios::out) << UpdateLog;
+ 				}
+ 			}
+ 
+@@ -3875,7 +3875,7 @@
+ 				int timeout = 100;
+ 				while (timeout-- && !portinfo)
+ 				{
+-					this_thread::sleep_for(chrono::milliseconds(100));
++					this_thread::sleep_for(std::chrono::milliseconds(100));
+ 					portinfo = this->manager->getPortElementBySN(serialNumberFET);
+ 				}
+ 
+@@ -3907,7 +3907,7 @@
+ #endif
+ 						UpdateLog.append("\n---------------------Firmware upate end--------------------------\n");
+ 
+-						ofstream(logfile.c_str(), ios::app | ios::out) << UpdateLog;
++						std::ofstream(logfile.c_str(), ios::app | ios::out) << UpdateLog;
+ 					}
+ 				}
+ 			}
+@@ -4306,7 +4306,7 @@
+ 
+ 	Run(FREE_RUN, true);					// start execution of loader code
+ 
+-	this_thread::sleep_for(chrono::seconds(15));
++	this_thread::sleep_for(std::chrono::seconds(15));
+ 
+ 	int32_t state;
+ 	int32_t pCPUCycles;
+diff -Naur libmsp430-orig/DLL430_v3/src/TI/DLL430/UpdateManagerFet.cpp libmsp430-fixed/DLL430_v3/src/TI/DLL430/UpdateManagerFet.cpp
+--- libmsp430-orig/DLL430_v3/src/TI/DLL430/UpdateManagerFet.cpp	2018-01-24 13:55:08.000000000 -0500
++++ libmsp430-fixed/DLL430_v3/src/TI/DLL430/UpdateManagerFet.cpp	2022-01-23 00:08:23.965133210 -0500
+@@ -52,6 +52,7 @@
+ #include "WatchdogControl.h"
+ #include "DeviceHandleMSP430.h"
+ #include "HidUpdateManager.h"
++#include "MSP_FetFpgaHal.h"
+ 
+ #include "Record.h"
+ #include "MemoryContent.h"
+diff -Naur libmsp430-orig/DLL430_v3/src/TI/DLL430/UsbCdcIoChannel.cpp libmsp430-fixed/DLL430_v3/src/TI/DLL430/UsbCdcIoChannel.cpp
+--- libmsp430-orig/DLL430_v3/src/TI/DLL430/UsbCdcIoChannel.cpp	2018-01-24 13:55:08.000000000 -0500
++++ libmsp430-fixed/DLL430_v3/src/TI/DLL430/UsbCdcIoChannel.cpp	2022-01-23 00:12:58.711787124 -0500
+@@ -375,7 +375,7 @@
+ 
+ bool UsbCdcIoChannel::openPort()
+ {
+-	ioService = new boost::asio::io_service;
++	ioService = new boost::asio::io_context;
+ 	port = new boost::asio::serial_port(*ioService);
+ 	timer = new boost::asio::deadline_timer(*ioService);
+ 
+@@ -384,7 +384,7 @@
+ 		int retry = 5;
+ 		while (ec && --retry )
+ 		{
+-			this_thread::sleep_for(chrono::milliseconds(5));
++			this_thread::sleep_for(std::chrono::milliseconds(5));
+ 			ec = port->open(portInfo.path, ec);
+ 		}
+ 
+@@ -409,7 +409,7 @@
+ 	{
+ 		openPort();
+ 		//Seeing issues on some platforms (eg. Ubuntu) when port is immediately closed again
+-		this_thread::sleep_for(chrono::milliseconds(100));
++		this_thread::sleep_for(std::chrono::milliseconds(100));
+ 		close();
+ 	}
+ }
+diff -Naur libmsp430-orig/DLL430_v3/src/TI/DLL430/UsbCdcIoChannel.h libmsp430-fixed/DLL430_v3/src/TI/DLL430/UsbCdcIoChannel.h
+--- libmsp430-orig/DLL430_v3/src/TI/DLL430/UsbCdcIoChannel.h	2018-01-24 13:55:08.000000000 -0500
++++ libmsp430-fixed/DLL430_v3/src/TI/DLL430/UsbCdcIoChannel.h	2022-01-23 00:12:12.044282219 -0500
+@@ -73,7 +73,7 @@
+ 
+ 		private:
+ 			std::vector<uint8_t> inputBuffer;
+-			boost::asio::io_service* ioService;
++			boost::asio::io_context* ioService;
+ 			boost::asio::serial_port* port;
+ 			boost::asio::deadline_timer* timer;
+ 			ComState comState;
+diff -Naur libmsp430-orig/Makefile libmsp430-fixed/Makefile
+--- libmsp430-orig/Makefile	2018-04-23 13:56:24.000000000 -0400
++++ libmsp430-fixed/Makefile	2022-01-23 00:08:23.965133210 -0500
+@@ -1,4 +1,5 @@
+-CXXFLAGS := -fPIC -std=c++0x -fvisibility=hidden -fvisibility-inlines-hidden
++CXXFLAGS := -fPIC -std=c++0x -fvisibility=hidden -fvisibility-inlines-hidden \
++	-I/usr/include/hidapi
+ 
+ PCH_HEADER := ./DLL430_v3/src/TI/DLL430/pch.h
+ PCH_COMPILED := ./DLL430_v3/src/TI/DLL430/pch.h.gch
+@@ -74,7 +75,7 @@
+ 	BSTATIC := -Wl,-Bstatic
+ 	BDYNAMIC := -Wl,-Bdynamic
+ 
+-	HIDOBJ := $(LIBTHIRD)/hid-libusb.o
++	HIDOBJ := -lhidapi-libusb
+ else
+ 	CXX:= clang++
+ 
+@@ -146,8 +147,11 @@
+ 
+ install:
+ 	cp $(OUTPUT) /usr/local/lib/
++	ldconfig
+ 
+ clean:
+ 	$(MAKE) -C ./ThirdParty/BSL430_DLL clean
+ 	@for i in $(OBJS); do rm -f $$i; done
+ 	@rm -f $(PCH_HEADER).?ch build.log
++	rm -f $(STATICOUTPUT).a
++	rm -f $(OUTPUT)
+diff -Naur libmsp430-orig/ThirdParty/BSL430_DLL/BSL430_DLL/Physical_Interfaces/MSPBSL_PhysicalInterfaceSerialUART.cpp libmsp430-fixed/ThirdParty/BSL430_DLL/BSL430_DLL/Physical_Interfaces/MSPBSL_PhysicalInterfaceSerialUART.cpp
+--- libmsp430-orig/ThirdParty/BSL430_DLL/BSL430_DLL/Physical_Interfaces/MSPBSL_PhysicalInterfaceSerialUART.cpp	2018-01-24 13:55:08.000000000 -0500
++++ libmsp430-fixed/ThirdParty/BSL430_DLL/BSL430_DLL/Physical_Interfaces/MSPBSL_PhysicalInterfaceSerialUART.cpp	2022-01-23 00:10:33.449503624 -0500
+@@ -193,27 +193,27 @@
+     
+ 	port->set_option(RESETControl(LOW_SIGNAL));
+ 	port->set_option(TESTControl(LOW_SIGNAL));
+-	this_thread::sleep_for(chrono::milliseconds(10));
++	this_thread::sleep_for(std::chrono::milliseconds(10));
+ 	port->set_option(TESTControl(HIGH_SIGNAL));
+-	this_thread::sleep_for(chrono::milliseconds(10));
++	this_thread::sleep_for(std::chrono::milliseconds(10));
+ 	port->set_option(TESTControl(LOW_SIGNAL));
+-	this_thread::sleep_for(chrono::milliseconds(10));
++	this_thread::sleep_for(std::chrono::milliseconds(10));
+ 	port->set_option(TESTControl(HIGH_SIGNAL));
+-	this_thread::sleep_for(chrono::milliseconds(10));
++	this_thread::sleep_for(std::chrono::milliseconds(10));
+ 	if( method == STANDARD_INVOKE )
+ 	{
+ 	  port->set_option(RESETControl(HIGH_SIGNAL));
+-	  this_thread::sleep_for(chrono::milliseconds(10));
++	  this_thread::sleep_for(std::chrono::milliseconds(10));
+ 	  port->set_option(TESTControl(LOW_SIGNAL));
+ 	}
+ 	else if ( method == BSL_XXXX_INVOKE )
+ 	{
+ 	  port->set_option(TESTControl(LOW_SIGNAL));
+-	  this_thread::sleep_for(chrono::milliseconds(10));
++	  this_thread::sleep_for(std::chrono::milliseconds(10));
+ 	  port->set_option(RESETControl(HIGH_SIGNAL));
+ 	}
+ 	
+-	this_thread::sleep_for(chrono::milliseconds(250));
++	this_thread::sleep_for(std::chrono::milliseconds(250));
+ 	
+ }
+ 
+diff -Naur libmsp430-orig/ThirdParty/BSL430_DLL/BSL430_DLL/Physical_Interfaces/MSPBSL_PhysicalInterfaceUSB.cpp libmsp430-fixed/ThirdParty/BSL430_DLL/BSL430_DLL/Physical_Interfaces/MSPBSL_PhysicalInterfaceUSB.cpp
+--- libmsp430-orig/ThirdParty/BSL430_DLL/BSL430_DLL/Physical_Interfaces/MSPBSL_PhysicalInterfaceUSB.cpp	2018-01-24 13:55:08.000000000 -0500
++++ libmsp430-fixed/ThirdParty/BSL430_DLL/BSL430_DLL/Physical_Interfaces/MSPBSL_PhysicalInterfaceUSB.cpp	2022-01-23 00:11:11.241096841 -0500
+@@ -189,7 +189,7 @@
+ 			return ERROR_READING_DATA; 
+ 		}
+ 
+-		this_thread::sleep_for(chrono::milliseconds(500));
++		this_thread::sleep_for(std::chrono::milliseconds(500));
+ 	}
+ 
+ 	return 0;
+diff -Naur libmsp430-orig/ThirdParty/BSL430_DLL/Makefile libmsp430-fixed/ThirdParty/BSL430_DLL/Makefile
+--- libmsp430-orig/ThirdParty/BSL430_DLL/Makefile	2018-01-24 13:55:08.000000000 -0500
++++ libmsp430-fixed/ThirdParty/BSL430_DLL/Makefile	2022-01-23 00:08:23.965133210 -0500
+@@ -1,4 +1,5 @@
+-CXXFLAGS := -fPIC -std=c++0x -fvisibility=hidden -fvisibility-inlines-hidden
++CXXFLAGS := -fPIC -std=c++0x -fvisibility=hidden -fvisibility-inlines-hidden \
++	-I/usr/include/hidapi
+ 
+ PCH_HEADER := ./BSL430_DLL/pch.h
+ PCH_COMPILED := ./BSL430_DLL/pch.h.gch
