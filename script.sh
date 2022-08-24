@@ -15,12 +15,11 @@ sudo ./msp430uif_install.sh --install
 sudo usermod -a -G dialout $(whoami)
 
 # install libmsp430.so from source
-echo -e "\e[32m>> Download slac460y.zip from TI...\e[39m"
+echo -e "\e[32m>> Build libmsp430.so library from source...\e[39m"
 mkdir libmsp430
 cd libmsp430
 unzip -q ../slac460y.zip
 patch -p1 < ../libmsp430.patch
-echo -e "\e[32m>> Build libmsp430.so library from source...\e[39m"
 make
 echo -e "\e[32m>> Install libmsp430.so...\e[39m"
 sudo mv libmsp430.so /usr/lib
@@ -46,12 +45,12 @@ TARCH=MSP430 INSTDIR=/usr/msp430 sudo -E make install
 cd $CURDIR
 
 # create ~/msp430 for code and drop in test program
-echo -e "\e[32m>> Create ~/msp430 directory with hworld.c test program...\e[39m"
+echo -e "\e[32m>> Create ~/msp430 directory with example files...\e[39m"
 mkdir -p /home/$(whoami)/msp430
 cp hworld.c /home/$(whoami)/msp430/
 
 # set minicom defaults
-echo -e "\e[32m>> Set defaults from minicom...\e[39m"
+echo -e "\e[32m>> Set defaults for minicom...\e[39m"
 sudo cp minirc.dfl /etc/minicom
 
 # all done, mention restarting
