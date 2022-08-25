@@ -28,7 +28,7 @@ cd $CURDIR
 
 # install mspdebug custom fork
 echo -e "\e[32m>> Build mspdebug from source...\e[39m"
-git clone https://github.com/chrissphinx/mspdebug.git
+git clone https://github.com/wmucs2230/mspdebug.git
 cd mspdebug
 make
 echo -e "\e[32m>> Install mspdebug...\e[39m"
@@ -37,7 +37,7 @@ cd $CURDIR
 
 # install libemb custom fork
 echo -e "\e[32m>> Build libemb from source...\e[39m"
-git clone https://github.com/chrissphinx/libemb.git
+git clone https://github.com/wmucs2230/libemb.git
 cd libemb
 TARCH=MSP430 make
 echo -e "\e[32m>> Install libemb...\e[39m"
