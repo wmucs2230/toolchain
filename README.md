@@ -8,5 +8,5 @@ Directions
 1. Unzip the archive using `unzip toolchain-main.zip`
 1. Change directory into the repository: `cd toolchain-main`
 1. Make the script executable: `chmod +x script.sh`
-1. Execute the script: `./script.sh`
+1. Execute the script: `./script.sh 2>&1 | tee script.log`
 
