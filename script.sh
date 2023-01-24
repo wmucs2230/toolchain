@@ -48,6 +48,7 @@ cd $CURDIR
 echo -e "\e[32m>> Create ~/msp430 directory with example files...\e[39m"
 mkdir -p /home/$(whoami)/msp430
 cp hworld.c /home/$(whoami)/msp430/
+cp Makefile /home/$(whoami)/msp430/
 
 # set minicom defaults
 echo -e "\e[32m>> Set defaults for minicom...\e[39m"
