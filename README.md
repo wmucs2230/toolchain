@@ -20,6 +20,8 @@ Directions
 	* ...once this has completed successfully, you should be inside of the `mspdebug` program and you can exit by pressing `ctrl-D` or typing `exit`
 1. In a separate terminal window, run: `minicom`
 1. If you don't see the message "Hello, World!", **leave `minicom` running** and...
-	* ...check the RX/TX jumpers on the launchpad. They should look like an `=` and not `||`
+	* ...check the RX/TX jumpers on the launchpad. They should look like an `=` and not `||` (see below)
 	* ...unplug the USB cable and plug it back in
 
+
+<img src="./jumpers_before.png" width=30%> <img src="./jumpers_after.png" width=30%>
