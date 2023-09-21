@@ -15,13 +15,14 @@ sudo ./msp430uif_install.sh --install
 sudo usermod -a -G dialout $(whoami)
 
 # install libmsp430.so from source
-echo -e "\e[32m>> Build libmsp430.so library from source...\e[39m"
-mkdir libmsp430
-cd libmsp430
-unzip -q ../slac460y.zip
-patch -p1 < ../libmsp430.patch
-make
-echo -e "\e[32m>> Install libmsp430.so...\e[39m"
+# echo -e "\e[32m>> Build libmsp430.so library from source...\e[39m"
+echo -e "\e[32m>> Copy libmsp430.so library into /usr/lib...\e[39m"
+# mkdir libmsp430
+# cd libmsp430
+# unzip -q ../slac460y.zip
+# patch -p1 < ../libmsp430.patch
+# make
+# echo -e "\e[32m>> Install libmsp430.so...\e[39m"
 sudo mv libmsp430.so /usr/lib
 sudo ldconfig
 cd $CURDIR
