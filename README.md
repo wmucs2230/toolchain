@@ -14,7 +14,7 @@ Directions
 1. Make sure the board is connected to your machine
 	* ...you can check this by running `lsusb` and looking for an entry from **Texas Instruments**
 	* ...if you don't see it, check how to pass a USB device through to the guest VM using your particular VM software
-1. Go to this location in the terminal: `cd ~/mps430`
+1. Go to this location in the terminal: `cd ~/msp430`
 1. Compile and flash the `hworld` program: `make flash`
 	* ...if this is the **first** time you've used the board, it's possible you will have to complete a firmware update, to do this execute `mspdebug tilib --allow-fw-update`. You may have to run this multiple times and the board may disconnect and reconnect during this period
 	* ...once this has completed successfully, you should be inside of the `mspdebug` program and you can exit by pressing `ctrl-D` or typing `exit`
