@@ -6,7 +6,7 @@ CURDIR=$(pwd)
 echo -e "\e[32m>> Update packages...\e[39m"
 sudo apt update
 echo -e "\e[32m>> Install dependencies...\e[39m"
-sudo apt install -y binutils-msp430 build-essential curl gcc-msp430 gdb-msp430 git libboost1.71-all-dev libhidapi-dev libusb-1.0-0-dev libusb-dev libreadline-dev minicom msp430-libc msp430mcu vim wget
+sudo apt install -y binutils-msp430 build-essential curl gcc-msp430 gdb-msp430 git libusb-dev libreadline-dev minicom msp430-libc msp430mcu vim wget
 
 # install udev rules and add user to dialout group
 echo -e "\e[32m>> Install udev rules and add user to dialout...\e[39m"
@@ -15,16 +15,21 @@ sudo ./msp430uif_install.sh --install
 sudo usermod -a -G dialout $(whoami)
 
 # install libmsp430.so from source
-echo -e "\e[32m>> Build libmsp430.so library from source...\e[39m"
-mkdir libmsp430
-cd libmsp430
-unzip -q ../slac460y.zip
-patch -p1 < ../libmsp430.patch
-make
-echo -e "\e[32m>> Install libmsp430.so...\e[39m"
-sudo mv libmsp430.so /usr/lib
+# echo -e "\e[32m>> Build libmsp430.so library from source...\e[39m"
+# mkdir libmsp430
+# cd libmsp430
+# unzip -q ../slac460y.zip
+# patch -p1 < ../libmsp430.patch
+# make
+if [[ $(uname -a) == "x86" ]]; then
+  echo -e "\e[32m>> Install X86 version of libmsp430.so...\e[39m"
+  sudo mv libmsp430.so_x86 /usr/lib/libmsp430.so
+else
+  echo -e "\e[32m>> Install ARM version of libmsp430.so...\e[39m"
+  sudo mv libmsp430.so_aarch64 /usr/lib/libmsp430.so
+fi
 sudo ldconfig
-cd $CURDIR
+# cd $CURDIR
 
 # install mspdebug custom fork
 echo -e "\e[32m>> Build mspdebug from source...\e[39m"
