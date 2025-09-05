@@ -21,12 +21,12 @@ sudo usermod -a -G dialout $(whoami)
 # unzip -q ../slac460y.zip
 # patch -p1 < ../libmsp430.patch
 # make
-if [[ $(uname -a) == "x86" ]]; then
-  echo -e "\e[32m>> Install X86 version of libmsp430.so...\e[39m"
-  sudo mv libmsp430.so_x86 /usr/lib/libmsp430.so
-else
+if [[ $(uname -a) =~ "aarch64" ]]; then
   echo -e "\e[32m>> Install ARM version of libmsp430.so...\e[39m"
   sudo mv libmsp430.so_aarch64 /usr/lib/libmsp430.so
+else
+  echo -e "\e[32m>> Install X86 version of libmsp430.so...\e[39m"
+  sudo mv libmsp430.so_x86 /usr/lib/libmsp430.so
 fi
 sudo ldconfig
 # cd $CURDIR
