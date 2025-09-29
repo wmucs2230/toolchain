@@ -1,4 +1,4 @@
-# MSP430 Toolchain for Ubuntu 20.04LTS
+# MSP430 Toolchain for Ubuntu 22.04LTS
 
 Directions
 ----------
